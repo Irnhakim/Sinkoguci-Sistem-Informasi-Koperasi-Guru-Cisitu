@@ -20,6 +20,8 @@ class Penarikan extends Model
         'tgl_penarikan',
         'jumlah',
         'keterangan',
+        'saldo_sebelum',
+        'saldo_sesudah',
     ];
 
     public function petugas()
@@ -32,7 +34,7 @@ class Penarikan extends Model
         return $this->belongsTo(Anggota::class, 'id_anggota', 'id_anggota');
     }
 
-    public function kategori_simpanan()
+    public function kategori()
     {
         return $this->belongsTo(KategoriSimpanan::class, 'id_kategori', 'id_kategori');
     }

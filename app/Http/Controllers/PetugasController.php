@@ -10,10 +10,12 @@ class PetugasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $title  = 'Kelola Petugas';
-        $petugas = Petugas::orderBy('id_petugas', 'desc')->paginate(10);
+        $cari  = $request->cari;
+        $level  = $request->level;
+        $petugas = Petugas::filter($cari, $level)->orderBy('id_petugas', 'DESC')->paginate(10);
         return view('admin.petugas.index', compact('title', 'petugas'));
     }
 
@@ -28,7 +30,7 @@ class PetugasController extends Controller
             'email'     => 'required|email|unique:petugas',
             'password'  => 'required|string|min:6',
             'level'     => 'required|in:admin,petugas',
-        ], 
+        ],
         [
             'nama.required'     => 'Nama tidak boleh kosong',
             'nama.string'       => 'Nama harus berupa string',
@@ -41,7 +43,6 @@ class PetugasController extends Controller
             'password.min'      => 'Password minimal 6 karakter',
             'level.required'    => 'Level tidak boleh kosong',
             'level.in'          => 'Level harus admin atau petugas',
-            
           ]);
 
         try {
@@ -56,7 +57,7 @@ class PetugasController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with(['error' => $th->getMessage()]);
         }
-        
+
     }
 
 
@@ -82,7 +83,7 @@ class PetugasController extends Controller
             'password.min'      => 'Password minimal 6 karakter',
             'level.required'    => 'Level tidak boleh kosong',
             'level.in'          => 'Level harus admin atau petugas',
-            
+
           ]);
 
         try {

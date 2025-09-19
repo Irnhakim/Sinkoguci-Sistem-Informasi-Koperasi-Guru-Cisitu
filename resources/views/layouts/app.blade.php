@@ -1,7 +1,7 @@
-<?php 
+<?php
 $menu = [];
 if (Auth::guard('petugas')->user()->level == "petugas") {
-    // 
+    //
     $menu = [
         [
             'text' => 'Main',
@@ -24,15 +24,15 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
             'icon' => 'fa fa-dollar-sign'
         ],
         [
-            'text' => 'Kelola Peminjaman',
+            'text' => 'Kelola Pinjaman',
             'type'=> 'link',
-            'url' => route('petugas.peminjaman.index'),
+            'url' => route('petugas.pinjaman.index'),
             'icon' => 'fa fa-credit-card'
         ],
         [
-            'text' => 'Bayar Cicilan',
+            'text' => 'Bayar Angsuran',
             'type'=> 'link',
-            'url' => route('petugas.cicilan.index'),
+            'url' => route('petugas.angsuran.index'),
             'icon' => 'fa fa-file-invoice-dollar'
         ],
         [
@@ -68,6 +68,18 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
             'text' => 'Laporan Tagihan',
             'type'=> 'link',
             'url' => route('petugas.laporan.tagihan'),
+            'icon' => 'fa fa-receipt'
+        ],
+        [
+            'text' => 'Laporan Pembayaran',
+            'type'=> 'link',
+            'url' => route('petugas.laporan.pembayaran'),
+            'icon' => 'fa fa-receipt'
+        ],
+        [
+            'text' => 'Laporan Rekap Transaksi',
+            'type'=> 'link',
+            'url' => route('petugas.laporan.rekap-pembayaran'),
             'icon' => 'fa fa-receipt'
         ],
     ];
@@ -106,20 +118,16 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
             'icon' => 'fa fa-dollar-sign'
         ],
         [
-            'text' => 'Laporan',
-            'type' => 'label',
+            'text' => 'Kelola Simpanan',
+            'type'=> 'link',
+            'url' => route('admin.simpanan.index'),
+            'icon' => 'fa fa-dollar-sign'
         ],
         [
-            'text' => 'Laporan Simpanan Bulanan',
+            'text' => 'Kelola Pinjaman',
             'type'=> 'link',
-            'url' => route('admin.laporan.simpanan-bulanan'),
-            'icon' => 'fa fa-receipt'
-        ],
-        [
-            'text' => 'Laporan Simpanan Tahunan',
-            'type'=> 'link',
-            'url' => route('admin.laporan.simpanan-tahunan'),
-            'icon' => 'fa fa-receipt'
+            'url' => route('admin.pinjaman.index'),
+            'icon' => 'fa fa-credit-card'
         ],
     ];
 }
@@ -186,7 +194,7 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
                Sweet Alert Css
     *===========================-->
     <link rel="stylesheet" href="{{asset('assets/vendors/sweetalert2/css/sweetalert2.min.css')}}">
-    
+
     <!--=========================*
               Flag Icons
     *===========================-->
@@ -199,6 +207,9 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
     <!-- Font USE: 'Roboto', sans-serif;-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Jquery Js -->
+    <script src="{{asset('assets/js/jquery.min.js')}}"></script>
+
    @yield('css')
 
 </head>
@@ -222,7 +233,7 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
                    Logo
         *=========================-->
         <div class="header-area-left">
-            <a href="index.html" class="logo">
+            <a href="/" class="logo">
                 <span>
                     <img src="{{asset('assets/images/logo.png')}}"  alt="" height="18">
 
@@ -246,12 +257,7 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
                         <i class="ion-android-menu"></i>
                     </button>
                 </div>
-                <div class="search-box pull-left">
-                    <form action="#">
-                        <i class="fa fa-search"></i>
-                        <input type="text" name="search" placeholder="Search..." required="">
-                    </form>
-                </div>
+
             </div>
             <!--==================================*
                      End Navigation and Search
@@ -268,23 +274,21 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
                             </button>
                         </span>
                     </li>
-                    
+
                     <li class="user-dropdown">
                         <div class="dropdown">
                             <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{asset('assets/images/user.jpg')}}" alt="" class="img-fluid">
+                                <img src="https://ui-avatars.com/api/?name={{Auth::guard('petugas')->user()->nama}}" alt="User Image">
                             </button>
                             <div class="dropdown-menu dropdown_user" aria-labelledby="dropdownMenuButton" >
                                 <div class="dropdown-header d-flex flex-column align-items-center">
-                                    <div class="user_img mb-3">
-                                        <img src="{{asset('assets/images/user.jpg')}}" alt="User Image">
-                                    </div>
+
                                     <div class="user_bio text-center">
                                         <p class="name font-weight-bold mb-0">{{Auth::guard('petugas')->user()->nama}}</p>
                                         <p class="email text-muted mb-3"><a class="pl-3 pr-3" href="monica@jhon.co.uk">{{Auth::guard('petugas')->user()->email}}</a></p>
                                     </div>
                                 </div>
-                                <a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i>My Profile</a>
+
                                 <span role="separator" class="divider"></span>
                                 <a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-sign-out-alt"></i>Keluar</a>
                             </div>
@@ -312,7 +316,7 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
                            Main Menu
                 *===========================-->
                 <ul class="metismenu" id="sidebar_menu">
-                
+
                     @foreach ($menu as $item)
                         @if($item['type'] =="label")
                             <li class="menu-title">{{$item['text']}}</li>
@@ -376,7 +380,7 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
     <footer>
         <div class="footer-area">
             <p>&copy; Copyright {{
-                date('Y') }} KPRI KGC. Design by <a href="https://www.kebutuhansosmed.com/" target="_blank">HAR</a>  with <i class="fa fa-heart text-danger" aria-hidden="true"></i>.</p>
+                date('Y') }} KPRI KGC. Design by <a href="https://www.kebutuhansosmed.com/" target="_blank">ARI</a>  with <i class="fa fa-heart text-danger" aria-hidden="true"></i>.</p>
         </div>
     </footer>
     <!--=================================*
@@ -393,12 +397,12 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
             Scripts
 *===========================-->
 
-<!-- Jquery Js -->
-<script src="{{asset('assets/js/jquery.min.js')}}"></script>
+
 <!-- bootstrap 4 js -->
 <script src="{{asset('assets/js/popper.min.js')}}"></script>
 <script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
 
+<script src="https://kebutuhansosmed.com/assets/admin/plugins/autonumeric/autoNumeric-min.js"></script>
 <!-- Metis Menu Js -->
 <script src="{{asset('assets/js/metisMenu.min.js')}}"></script>
 <!-- SlimScroll Js -->
@@ -410,8 +414,18 @@ if (Auth::guard('petugas')->user()->level == "petugas") {
 <!-- Sweet Alert Js -->
 <script src="{{asset('assets/vendors/sweetalert2/js/sweetalert2.all.min.js')}}"></script>
 <!-- ========== This Page js ========== -->
+<script>
+     const convertRupiahToNumber = (rupiah) => {
+    // Rp 1.000.000
+    // Misalkan Rp Saja = 0
 
-
+    let number = parseInt(rupiah.replace(/[^0-9]/g, ''), 10);
+    if (isNaN(number)) {
+        number = 0;
+    }
+    return number;
+ }
+ </script>
 @yield('js')
 @if($errors->any())
     <script>

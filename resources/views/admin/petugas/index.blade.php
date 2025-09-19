@@ -22,6 +22,30 @@
                 <h4 class="card_title">
                     {{$title}}
                 </h4>
+                <form class="row" action="{{route('admin.petugas.index')}}" method="get">
+                    <div class="col-lg-6">
+                        <label class="form-check-label" for="level">Level</label>
+                        <div class="input-group mb-3">
+                            <select class="form-control" autocomplete="off" id="level" name="level">
+                                <option value="" selected disabled>-- Pilih Level --</option>
+                                <option value="admin" {{ Request::get('level') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="petugas" {{ Request::get('level') == 'petugas' ? 'selected' : '' }}>Petugas</option>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label class="form-check-label" for="cari">Kata Kunci</label>
+                        <div class="input-group mb-3">
+                            <input type="text" name="cari" id="cari" class="form-control" placeholder="Cari Petugas ..." value="{{ Request::get('cari') }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                        </div>
+                    </div>
+                </form>
                 <div class="single-table">
                     <div class="table-responsive">
                         <table class="table table-hover progress-table text-center">
@@ -31,17 +55,20 @@
                                 <th scope="col">Nama Lengkap</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Level</th>
+                                <th scope="col">Terdaftar</th>
+                                <th scope="col">Diperbaharui</th>
                                 <th scope="col">Aksi</th>
-                             
                             </tr>
                             </thead>
                             <tbody>
-                                @foreach ($petugas as $item)
+                                @forelse ($petugas as $item)
                                 <tr>
                                     <th scope="row">{{$item->id_petugas}}</th>
                                     <td>{{$item->nama}}</td>
                                     <td>{{$item->email}}</td>
                                     <td>{{$item->level}}</td>
+                                    <td>{{Helper::dateTimeIndo($item->created_at)}}</td>
+                                    <td>{{Helper::dateTimeIndo($item->updated_at)}}</td>
                                     <td>
                                         <ul class="d-flex justify-content-center">
                                             <li class="mr-3"><button type="button" class="btn btn-inverse-primary" data-toggle="modal" data-target="#modalEditPetugas{{$item->id_petugas}}"><i class="fa fa-edit"></i></button></li>
@@ -56,11 +83,16 @@
                                         </ul>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">Tidak ada data</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
+                {{ $petugas->appends(Request::all())->links('vendor.pagination.bootstrap-4') }}
             </div>
         </div>
     </div>

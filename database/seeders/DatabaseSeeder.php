@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
             SekolahTableSeeder::class,
             PetugasTableSeeder::class,
             AnggotaTableSeeder::class,
+            // PinjamanTableSeeder::class,
+            // SimpananTableSeeder::class,
+            // PenarikanTableSeeder::class,
         ]);
     }
 }

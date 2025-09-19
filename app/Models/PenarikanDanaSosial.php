@@ -26,9 +26,4 @@ class PenarikanDanaSosial extends Model
         return $this->belongsTo(Petugas::class, 'id_petugas', 'id_petugas');
     }
 
-    public function anggota()
-    {
-        return $this->belongsTo(Anggota::class, 'id_anggota', 'id_anggota');
-    }
-    
 }
